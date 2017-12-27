@@ -17,118 +17,126 @@
 
 package butter.droid.tv.service.recommendation;
 
-import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.ParcelFileDescriptor;
 import android.util.Log;
-
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.OkUrlFactory;
-
+import dagger.android.DaggerContentProvider;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLDecoder;
+import javax.inject.Inject;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Request.Builder;
+import okhttp3.Response;
 
-import butter.droid.base.ButterApplication;
+public class RecommendationContentProvider extends DaggerContentProvider {
 
-public class RecommendationContentProvider extends ContentProvider {
+    public static String AUTHORITY = "pct.droid.tv.RecommendationContentProvider";
+    public static String CONTENT_URI = "content://" + AUTHORITY + "/";
 
-	public static String AUTHORITY = "pct.droid.tv.RecommendationContentProvider";
-	public static String CONTENT_URI = "content://" + AUTHORITY + "/";
+    @Inject OkHttpClient client;
 
-	@Override
-	public boolean onCreate() {
-		return true;
-	}
+    @Override
+    public boolean onCreate() {
+        return true;
+    }
 
-	@Override
-	public ParcelFileDescriptor openFile(Uri uri, String mode)
-			throws FileNotFoundException {
-		ParcelFileDescriptor[] pipe = null;
+    @Override
+    public ParcelFileDescriptor openFile(Uri uri, String mode)
+            throws FileNotFoundException {
+        ParcelFileDescriptor[] pipe = null;
 
-		String url = uri.getPath();
+        String url = uri.getPath();
 
-		try {
-			String decodedUrl = URLDecoder.decode(url.replaceFirst("/", ""),
-					"UTF-8");
-			pipe = ParcelFileDescriptor.createPipe();
+        try {
+            String decodedUrl = URLDecoder.decode(url.replaceFirst("/", ""),
+                    "UTF-8");
+            pipe = ParcelFileDescriptor.createPipe();
 
-			OkHttpClient httpClient = ButterApplication.getHttpClient();
-			OkUrlFactory factory = new OkUrlFactory(httpClient);
-			HttpURLConnection connection = factory.open(new URL(decodedUrl));
+            Request request = new Builder()
+                    .url(new URL(decodedUrl))
+                    .build();
 
-			new TransferThread(connection.getInputStream(),
-					new ParcelFileDescriptor.AutoCloseOutputStream(pipe[1]))
-					.start();
-		} catch (IOException e) {
-			Log.e(getClass().getSimpleName(), "Exception opening pipe", e);
-			throw new FileNotFoundException("Could not open pipe for: "
-					+ uri.toString());
-		}
+            Response response = getOkHttpClient().newCall(request)
+                    .execute();
 
-		return (pipe[0]);
-	}
+            new TransferThread(response.body().byteStream(),
+                    new ParcelFileDescriptor.AutoCloseOutputStream(pipe[1]))
+                    .start();
+        } catch (IOException e) {
+            Log.e(getClass().getSimpleName(), "Exception opening pipe", e);
+            throw new FileNotFoundException("Could not open pipe for: "
+                    + uri.toString());
+        }
 
-	@Override
-	public Cursor query(Uri uri, String[] projection, String selection,
-			String[] selectionArgs, String sortOrder) {
-		return null;
-	}
+        return (pipe[0]);
+    }
 
-	@Override
-	public String getType(Uri uri) {
-		return "image/*";
-	}
+    @Override
+    public Cursor query(Uri uri, String[] projection, String selection,
+            String[] selectionArgs, String sortOrder) {
+        return null;
+    }
 
-	@Override
-	public Uri insert(Uri uri, ContentValues values) {
-		return null;
-	}
+    @Override
+    public String getType(Uri uri) {
+        return "image/*";
+    }
 
-	@Override
-	public int delete(Uri uri, String selection, String[] selectionArgs) {
-		return 0;
-	}
+    @Override
+    public Uri insert(Uri uri, ContentValues values) {
+        return null;
+    }
 
-	@Override
-	public int update(Uri uri, ContentValues values, String selection,
-			String[] selectionArgs) {
-		return 0;
-	}
+    @Override
+    public int delete(Uri uri, String selection, String[] selectionArgs) {
+        return 0;
+    }
 
-	static class TransferThread extends Thread {
-		InputStream in;
-		OutputStream out;
+    @Override
+    public int update(Uri uri, ContentValues values, String selection,
+            String[] selectionArgs) {
+        return 0;
+    }
 
-		TransferThread(InputStream in, OutputStream out) {
-			this.in = in;
-			this.out = out;
-		}
+    static class TransferThread extends Thread {
 
-		@Override
-		public void run() {
-			byte[] buf = new byte[8192];
-			int len;
+        InputStream in;
+        OutputStream out;
 
-			try {
-				while ((len = in.read(buf)) > 0) {
-					out.write(buf, 0, len);
-				}
+        TransferThread(InputStream in, OutputStream out) {
+            this.in = in;
+            this.out = out;
+        }
 
-				in.close();
-				out.flush();
-				out.close();
-			} catch (IOException e) {
-				Log.e(getClass().getSimpleName(),
-						"Exception transferring file", e);
-			}
-		}
-	}
+        @Override
+        public void run() {
+            byte[] buf = new byte[8192];
+            int len;
+
+            try {
+                while ((len = in.read(buf)) > 0) {
+                    out.write(buf, 0, len);
+                }
+
+                in.close();
+                out.flush();
+                out.close();
+            } catch (IOException e) {
+                Log.e(getClass().getSimpleName(),
+                        "Exception transferring file", e);
+            }
+        }
+    }
+
+    private OkHttpClient getOkHttpClient() {
+        return client;
+    }
 
 }

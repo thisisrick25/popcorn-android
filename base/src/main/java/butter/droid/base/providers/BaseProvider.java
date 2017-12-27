@@ -17,22 +17,19 @@
 
 package butter.droid.base.providers;
 
-import android.os.AsyncTask;
+import android.support.annotation.CallSuper;
 
 import com.google.gson.Gson;
-import com.squareup.okhttp.Call;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
-import butter.droid.base.ButterApplication;
-import butter.droid.base.providers.media.MediaProvider;
-import butter.droid.base.providers.meta.MetaProvider;
-import butter.droid.base.providers.subs.SubsProvider;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Dispatcher;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
 
 /**
  * BaseProvider.java
@@ -41,11 +38,16 @@ import butter.droid.base.providers.subs.SubsProvider;
  */
 public abstract class BaseProvider {
 
-    protected Gson mGson = new Gson();
-    protected Call mCurrentCall;
+    private final OkHttpClient client;
+    protected Gson mGson;
+
+    public BaseProvider(OkHttpClient client, Gson gson) {
+        this.client = client;
+        this.mGson = gson;
+    }
 
     protected OkHttpClient getClient() {
-        return ButterApplication.getHttpClient();
+        return client;
     }
 
     /**
@@ -61,33 +63,48 @@ public abstract class BaseProvider {
     /**
      * Enqueue request with callback
      *
-     * @param request         Request
+     * @param request Request
      * @param requestCallback Callback
      * @return Call
      */
-    protected Call enqueue(Request request, com.squareup.okhttp.Callback requestCallback) {
-        mCurrentCall = getClient().newCall(request);
-        if (requestCallback != null) mCurrentCall.enqueue(requestCallback);
-        return mCurrentCall;
+    protected Call enqueue(Request request, Callback requestCallback) {
+        request = request.newBuilder()
+                .tag(getClass())
+                .build();
+
+        Call call = getClient().newCall(request);
+        if (requestCallback != null) {
+            call.enqueue(requestCallback);
+        }
+        return call;
     }
 
-    public void cancel() {
-        // Cancel in asynctask to prevent networkOnMainThreadException but make it blocking to prevent network calls to be made and then immediately cancelled.
-        try {
-            new AsyncTask<Void, Void, Void>() {
-                @Override
-                protected Void doInBackground(Void... params) {
-                    getClient().cancel(MediaProvider.MEDIA_CALL);
-                    getClient().cancel(MetaProvider.META_CALL);
-                    getClient().cancel(SubsProvider.SUBS_CALL);
-                    return null;
+    /**
+     * This method will be called when user is done with data that he required. Provider should at this point
+     * clean after itself. For example cancel all ongoing network request.
+     */
+    @CallSuper public void cancel() {
+        final Dispatcher dispatcher = client.dispatcher();
+
+        dispatcher.executorService().execute(new Runnable() {
+            @Override public void run() {
+                if (dispatcher.queuedCallsCount() > 0) {
+                    for (Call call : dispatcher.queuedCalls()) {
+                        if (getClass().equals(call.request().tag())) {
+                            call.cancel();
+                        }
+                    }
                 }
-            }.execute().get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
+
+                if (dispatcher.runningCallsCount() > 0) {
+                    for (Call call : dispatcher.runningCalls()) {
+                        if (getClass().equals(call.request().tag())) {
+                            call.cancel();
+                        }
+                    }
+                }
+            }
+        });
     }
 
     /**
@@ -105,17 +122,19 @@ public abstract class BaseProvider {
                 stringBuilder.append(URLEncoder.encode(pair.getName(), "utf-8"));
                 stringBuilder.append("=");
                 stringBuilder.append(URLEncoder.encode(pair.getValue(), "utf-8"));
-                if (i + 1 != valuePairs.size()) stringBuilder.append("&");
+                if (i + 1 != valuePairs.size()) {
+                    stringBuilder.append("&");
+                }
             }
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
 
-
         return stringBuilder.toString();
     }
 
     public class NameValuePair {
+
         private String mName;
         private String mValue;
 

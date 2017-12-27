@@ -17,20 +17,52 @@
 
 package butter.droid.tv;
 
+import android.content.Context;
+import android.support.multidex.MultiDex;
+import butter.droid.base.BaseApplicationModule;
 import butter.droid.base.ButterApplication;
+import butter.droid.base.providers.DaggerProviderComponent;
+import butter.droid.base.providers.ProviderComponent;
 import butter.droid.base.utils.VersionUtils;
+import dagger.android.AndroidInjector;
+import dagger.android.support.DaggerApplication;
 
 public class TVButterApplication extends ButterApplication {
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
-    }
+    private ApplicationComponent appComponent;
+    private ProviderComponent providerComponent;
 
     @Override
     public void updateAvailable(String filePath) {
-        if(!VersionUtils.isAndroidTV()) {
+        if (!VersionUtils.isAndroidTV()) {
             super.updateAvailable(filePath);
         }
+    }
+
+    @Override protected AndroidInjector<? extends DaggerApplication> applicationInjector() {
+        if (appComponent == null) {
+            appComponent = DaggerApplicationComponent.builder()
+                    .baseApplicationModule(new BaseApplicationModule(this))
+                    .build();
+        }
+
+        if (providerComponent == null) {
+            providerComponent = DaggerProviderComponent.builder()
+                    .baseApplicationComponent(appComponent)
+                    .build();
+        }
+
+        return DaggerTVInternalComponent.builder()
+                .providerComponent(providerComponent)
+                .create(this);
+    }
+
+    @Override protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
+    }
+
+    public static TVButterApplication getAppContext() {
+        return (TVButterApplication) ButterApplication.getAppContext();
     }
 }

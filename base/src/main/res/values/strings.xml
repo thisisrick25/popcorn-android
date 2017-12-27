@@ -16,7 +16,8 @@
   ~ along with Butter. If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools"
+        tools:locale="en">
 
     <string name="app_name" translatable="false">Butter</string>
     <string name="cancel">Cancel</string>
@@ -91,6 +92,7 @@
     <string name="updates">Updates</string>
     <string name="auto_updates">Automatic updates</string>
     <string name="check_for_updates">Check for updates</string>
+    <string name="checking_for_updates">Checking for updates…</string>
     <string name="last_check">Last check</string>
     <string name="about_app">About</string>
     <string name="version">Version</string>
@@ -102,6 +104,9 @@
     <string name="download_speed">Maximum download speed</string>
     <string name="upload_speed">Maximum upload speed</string>
     <string name="max_connections">Maximum total connections</string>
+    <string name="networking">Networking</string>
+    <string name="automatic_port">Use random port</string>
+    <string name="listening_port">Listening port</string>
     <string name="dht_limit">DHT limit</string>
     <string name="unlimited">Unlimited</string>
     <string name="show_vpn">Show VPN option in menu</string>
@@ -115,6 +120,25 @@
 	<string name="fit_horizontal">Fit horizontal</string>
 	<string name="fit_vertical">Fit vertical</string>
 	<string name="original_size">Original</string>
+
+    <string-array name="prefs_providers">
+        <item>@string/title_movies</item>
+        <item>@string/title_shows</item>
+        <item>@string/title_anime</item>
+    </string-array>
+
+    <string-array name="prefs_hw">
+        <item>@string/hw_automatic</item>
+        <item>@string/disabled</item>
+        <item>@string/hw_decoding</item>
+        <item>@string/hw_full</item>
+    </string-array>
+
+    <string-array name="prefs_pixel_format">
+        <item>@string/rgb16</item>
+        <item>@string/rgb32</item>
+        <item>@string/yuv</item>
+    </string-array>
 
     <!-- DetailActivity strings -->
     <string name="minutes">min</string>
@@ -357,5 +381,7 @@ By using \'BUTTER\' or accessing this site you affirm that you are either more t
 
     <!-- PTVSettingsFragment -->
     <string name="version_pref">Version</string>
+
+    <string name="overview_player_test">Player Tests</string>
 
 </resources>

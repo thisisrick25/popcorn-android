@@ -19,63 +19,87 @@ package butter.droid.tv.presenters;
 
 import android.content.Context;
 import android.support.annotation.DrawableRes;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.support.v17.leanback.widget.Presenter;
 import android.view.ViewGroup;
-
-import butter.droid.base.providers.media.MediaProvider;
-import butter.droid.base.utils.LocaleUtils;
 import butter.droid.base.utils.StringUtils;
+import butter.droid.provider.base.filter.Sorter;
+import butter.droid.provider.base.nav.NavItem;
+import butter.droid.tv.R;
 
 public class MorePresenter extends Presenter {
 
-	private Context mContext;
+    private Context context;
 
-	public MorePresenter(Context context) {
-		mContext = context.getApplicationContext();
-	}
+    public MorePresenter(Context context) {
+        this.context = context.getApplicationContext();
+    }
 
-	@Override
-	public ViewHolder onCreateViewHolder(ViewGroup parent) {
-		final MoreCardView cardView = new MoreCardView(mContext);
-		return new ViewHolder(cardView);
-	}
+    @Override
+    public ViewHolder onCreateViewHolder(ViewGroup parent) {
+        final MoreCardView cardView = new MoreCardView(context);
+        return new ViewHolder(cardView);
+    }
 
-	@Override
-	public void onBindViewHolder(ViewHolder viewHolder, Object item) {
-		MoreItem moreItem = (MoreItem) item;
-		MoreCardView cardView = (MoreCardView) viewHolder.view;
+    @Override
+    public void onBindViewHolder(ViewHolder viewHolder, Object item) {
+        MoreItem moreItem = (MoreItem) item;
+        MoreCardView cardView = (MoreCardView) viewHolder.view;
 
-		cardView.setTitleText(StringUtils.capWords(moreItem.mTitle.toLowerCase()));
-		cardView.setImageResource(moreItem.mIcon);
-	}
+        cardView.setTitleText(StringUtils.capWords(context.getString(moreItem.title).toLowerCase()));
+        cardView.setImageResource(moreItem.icon);
+    }
 
-	@Override
-	public void onUnbindViewHolder(ViewHolder viewHolder) {
-	}
+    @Override
+    public void onUnbindViewHolder(ViewHolder viewHolder) {
+    }
 
-	public static class MoreItem {
+    public static class MoreItem {
 
-		private final String mTitle;
-		private final int mIcon;
-		private final int mId;
-		private MediaProvider.NavInfo mNavInfo;
+        @StringRes private final int title;
+        private final int icon;
+        private final int id;
+        @Nullable private Sorter sorter;
+        private final int providerId;
 
-		public MoreItem(int id, String text, @DrawableRes int iconResId, @Nullable MediaProvider.NavInfo info) {
-			mId = id;
-			mIcon = iconResId;
-			mTitle = text.toUpperCase(LocaleUtils.getCurrent());
-			this.mNavInfo = info;
-		}
+        public MoreItem(@NonNull NavItem nav, final int providerId) {
+            this.id = R.id.more_item_filter;
+            this.icon = nav.getIcon();
+            this.title = nav.getLabel();
+            this.sorter = nav.getSorter();
+            this.providerId = providerId;
+        }
 
-		public int getId() {
-			return mId;
-		}
+        public MoreItem(int id, @StringRes int text, @DrawableRes int iconResId) {
+            if (id == R.id.more_item_filter) {
+                throw new IllegalStateException("Filter item requires filter field to be set");
+            }
 
-		public MediaProvider.NavInfo getNavInfo() {
-			return mNavInfo;
-		}
-	}
+            this.id = id;
+            this.icon = iconResId;
+            this.title = text;
+            this.sorter = null;
+            this.providerId = -1;
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        public int getTitle() {
+            return title;
+        }
+
+        @Nullable public Sorter getSorter() {
+            return sorter;
+        }
+
+        public int getProviderId() {
+            return providerId;
+        }
+    }
 
 
 }

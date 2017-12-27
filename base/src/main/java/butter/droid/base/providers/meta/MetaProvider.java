@@ -17,18 +17,24 @@
 
 package butter.droid.base.providers.meta;
 
-import org.joda.time.DateTime;
+import com.google.gson.Gson;
 
+import org.threeten.bp.LocalDate;
 import butter.droid.base.providers.BaseProvider;
+import okhttp3.OkHttpClient;
 
 public abstract class MetaProvider extends BaseProvider {
-    public static final String META_CALL = "meta_http_call";
+
+    public MetaProvider(OkHttpClient client, Gson gson) {
+        super(client, gson);
+    }
 
     public static class MetaData {
+
         public String title;
         public Integer year;
-        public String imdb_id;
-        public DateTime released;
+        public String imdbId;
+        public LocalDate released;
         public String trailer;
         public Integer runtime;
         public Double rating;
@@ -39,6 +45,7 @@ public abstract class MetaProvider extends BaseProvider {
         public String[] genres;
 
         public static class Images {
+
             public String poster;
             public String backdrop;
 
@@ -54,6 +61,7 @@ public abstract class MetaProvider extends BaseProvider {
     }
 
     public interface Callback {
+
         public void onResult(MetaData metaData, Exception e);
     }
 

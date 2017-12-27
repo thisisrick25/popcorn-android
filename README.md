@@ -5,24 +5,41 @@ Allow any Android user to watch movies easily streaming from torrents, without a
 
 Visit the project's website at <http://butterproject.org>.
 
-* [Issue Tracker](https://github.com/butterproject/butter-android/issues)
-
 ## Community
 
 Keep track of Butter development and community activity.
 
 * Follow Butter on [Twitter](https://twitter.com/butterproject), [Facebook](https://www.facebook.com/ButterProjectOrg/) and [Google+](https://plus.google.com/communities/111003619134556931561).
-* Read and subscribe to [The Official Butter Blog](https://github.com/butterproject/blog).
-* Join in discussions on the [Butter Forum](https://discuss.butterproject.org)
-* Connect with us on IRC at `#butterproject` on freenode ([web access](http://webchat.freenode.net/?channels=butterproject))
+* Join in discussions on the [Butter Forum](https://www.reddit.com/r/ButterProject)
+
+## Roadmap
+
+### pre 1.0.0
+ - [x] 0.4.0 - Migrating app to MVP arhitecture
+ - [x] 0.5.0 - Refactor media providers
+ - [ ] 0.6.0 - Update video player and resolve media streaming issues
+ - [ ] 0.7.0 - Refactor updater to work on p2p protocol
+ - [ ] 0.8.0 - Updating connect SDK
+ - [ ] 0.9.0 - Cleaning up project (resources, proguard, ...)
+ - [ ] 1.0.0 - Making app stable for release
+
+### pos 1.0.0
+ - Make media providers available through Content Providers.
+ - Make desktop JS media providers available on Android.
+ - Support multiple audio sources.
+ - Make media available offline.
+ - Adding support for Chromebooks.
+ - Picture in picture support.
 
 ## Getting Involved
 
-Want to report a bug, request a feature, contribute or translate Butter? Check out our in-depth guide to [Contributing to Butter](CONTRIBUTING.md#contributing-to-butter).
+Want to report a bug, request a feature, contribute or translate Butter? Check out our in-depth guide to [Contributing to Butter](.github/CONTRIBUTING.md#contributing-to-butter).
 
-## Build Instructions ##
+## Build Instructions
 
-The [gradle build system](http://tools.android.com/tech-docs/new-build-system/user-guide) will fetch all dependencies and generate
+[![CircleCI](https://circleci.com/gh/blazsolar/butter-android.svg?style=svg)](https://circleci.com/gh/blazsolar/butter-android)
+
+The [gradle build system](https://developer.android.com/studio/build/index.html) will fetch all dependencies and generate
 files you need to build the project. You first need to generate the
 local.properties (replace YOUR_SDK_DIR by your actual android sdk dir)
 file:
@@ -31,67 +48,40 @@ file:
 
 You can now sync, build and install the project:
 
-    $ ./gradlew assembleDebug # assemble the debug .apk
-    $ ./gradlew installDebug  # install the debug .apk if you have an
-                              # emulator or an Android device connected
+    $ ./gradlew assembleDebug   # assemble the debug .apk
+    $ ./gradlew assembleRelease # assemble the release .apk (signing keys are required)
+    $ ./gradlew installDebug    # install the debug .apk if you have an
+                                # emulator or an Android device connected
 
-You can use [Android Studio](http://developer.android.com/sdk/installing/studio.html) by importing the project as a Gradle project.
+You can use [Android Studio](http://developer.android.com/sdk/installing/studio.html) by it as existing project.
 
 ## Directory structure ##
 
-    `|-- base                            # base module (contains providers and streamer)
-     |    |-- build.gradle               # base build script
-     |    `-- src
-     |          |-- main
-     |                |-- assets         # base module assets
-     |                |-- java           # base module java code
-     |                `-- res            # base module resources
+    `|-- base                            # base module (contains all the core functionallity)
     `|-- mobile                          # mobile module (smartphone/tablet application)
-     |    |-- build.gradle               # mobile build script
-     |    `-- src
-     |          |-- main
-     |                |-- java           # mobile module java code
-     |                `-- res            # mobile module resources
     `|-- tv                              # tv module (Android TV application)
-     |    |-- build.gradle               # tv build script
-     |    `-- src
-     |          |-- main
-     |                |-- java           # tv module java code
-     |                `-- res            # tv module resources
-    `|-- vlc                             # vlc module (VLC mediaplayer library)
-     |    |-- build.gradle               # vlc module build script
-     |    `-- src
-     |          |-- main
-     |                |-- jniLibs        # native LibVLC libraries
-     |                |-- java           # LibVLC Java code
-    `|-- connectsdk                      # connectsdk module
-          |-- build.gradle               # connectsdk build script
-          `-- src
-          |     |-- java                 # connectsdk module java code
-          `-- core
-          |     |-- src                  # connectsdk module core java code
+    `|-- provider                        # includes provider implementations
+          `-- media                      # media provider implementation and SDK
+                |-- base                 # Contains models for working with providers
+                |-- mock                 # Provider implementation with mock data for testing purposes
+                |-- provide              # Media provider SDK
+                `-- vodo                 # Vodo provider implementation
+          `-- subs                       # subtitle provider implementation and SDK
+                |-- mock                 # Subs provider implementation with mock data for testing purposes
+                |-- provide              # Subs provider SDK
+    `|-- connectsdk                      # connectsdk module responsible for streaming on external device such as Chromecas or Apple TV
+          |-- core                       # connectsdk module core implementation
           `-- modules
-                |-- google_cast
-                      |-- src            # connectsdk module google cast java code
-                |-- firetv
-                      |-- src            # connectsdk module google cast java code
+                |-- google_cast          # connectsdk module google cast implementation
+                |-- firetv               # connectsdk module fire tv implementation
 
 ## Versioning
 
 For transparency and insight into our release cycle, and for striving to maintain backward compatibility, Butter will be maintained according to the [Semantic Versioning](http://semver.org/) guidelines as much as possible.
 
-###Beta versions
-
-Beta releases will be numbered with the following format:
-
-`0.<major>.<minor>-<patch>`
-
-###Stable versions
-
 Releases will be numbered with the following format:
 
 `<major>.<minor>.<patch>`
-
 
 Constructed with the following guidelines:
 * A new *major* release indicates a large change where backwards compatibility is broken.
@@ -112,4 +102,4 @@ Note: some dependencies are external libraries, which might be covered by a diff
 
 ***
 
-Copyright (c) 2015 Butter Project - Released under the [GPL v3 license](LICENSE.txt).development/LICENSE.md).
+Copyright (c) 2015 Butter Project - Released under the [GPL v3 license](LICENSE.txt).

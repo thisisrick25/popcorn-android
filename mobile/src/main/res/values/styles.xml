@@ -42,12 +42,16 @@
         <item name="toolbarStyle">@style/Custom.Widget.Toolbar</item>
         <item name="toolbarNavigationButtonStyle">@style/Custom.Widget.Toolbar.Button.Navigation</item>
         <item name="actionOverflowButtonStyle">@style/Custom.Widget.ActionButton.Overflow</item>
+
+        <item name="optionPreviewStyle">@style/OptionPreview</item>
 	</style>
 
-	<style name="Theme.Butter" parent="Theme.Base">
-		<item name="android:seekBarStyle">@style/Theme.Butter.SeekBar</item>
-		<item name="android:progressBarStyleHorizontal">@style/Theme.Butter.ProgressBar</item>
-	</style>
+	<style name="Theme.Butter" parent="Theme.Butter.Base" />
+
+    <style name="Theme.Butter.Base" parent="Theme.Base">
+        <item name="android:seekBarStyle">@style/Theme.Butter.SeekBar</item>
+        <item name="android:progressBarStyleHorizontal">@style/Theme.Butter.ProgressBar</item>
+    </style>
 
 	<style name="Theme.Butter.Search" parent="Theme.Butter">
 		<item name="android:windowAnimationStyle">@style/ActivityFadeAnimation</item>
@@ -93,9 +97,9 @@
 		<item name="colorAccent">@android:color/white</item>
 	</style>
 
-	<style name="Theme.Butter.NavigationDrawer" parent="Theme.Butter"></style>
+	<style name="Theme.Butter.NavigationDrawer" parent="Theme.Butter" />
 
-	<style name="Theme.Butter.TransparentStatusBar" parent="Theme.Butter"></style>
+	<style name="Theme.Butter.TransparentStatusBar" parent="Theme.Butter" />
 
 	<style name="Theme.Butter.ProgressBar" parent="android:Widget.ProgressBar.Horizontal">
 		<item name="android:progressDrawable">@drawable/progress_horizontal_holo_light</item>
@@ -118,16 +122,15 @@
     </style>
 
     <style name="Theme.Butter.AboutButton" parent="android:Widget.Button">
-        <item name="android:layout_marginTop">32dp</item>
+        <item name="android:layout_marginTop">16dp</item>
         <item name="android:drawablePadding">16dp</item>
-        <item name="android:layout_marginLeft">16dp</item>
-        <item name="android:layout_marginRight">16dp</item>
+        <item name="android:padding">16dp</item>
         <item name="android:layout_gravity">center_horizontal</item>
         <item name="android:layout_centerHorizontal">true</item>
         <item name="android:gravity">center</item>
         <item name="android:textColor">@color/text_color</item>
         <item name="android:textAppearance">@style/TextAppearance.AppCompat.Subhead.Inverse</item>
-        <item name="android:background">?attr/selectableItemBackground</item>
+        <item name="android:background">?attr/selectableItemBackgroundBorderless</item>
     </style>
 
     <style name="Theme.Butter.RatingBar" parent="android:Widget.RatingBar">
@@ -149,6 +152,12 @@
         <item name="android:textAllCaps">true</item>
         <item name="android:radius">2dp</item>
         <item name="android:background">@drawable/selectable_background_rounded</item>
+    </style>
+
+    <style name="OptionPreview">
+        <item name="android:background">?attr/selectableItemBackground</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:minHeight">56dp</item>
     </style>
 
     <!-- Fix Toolbar metrics -->
