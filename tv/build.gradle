@@ -1,4 +1,6 @@
 import si.kamino.gradle.extensions.version.FileAppVersion
+import si.kamino.gradle.extensions.version.StaticVersion
+import si.kamino.gradle.extensions.version.code.SimpleVersionCode
 
 /*
  * This file is part of Butter.
@@ -20,7 +22,7 @@ apply from: "${project.rootDir}/config/gradle/android-application-config.gradle"
 
 android {
     defaultConfig {
-        applicationId "butter.droid.tv"
+        applicationId "org.butterproject.butter"
         minSdkVersion 21
     }
 
@@ -45,7 +47,7 @@ android {
             enable true
             universalApk false
             reset()
-            include 'armeabi', 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'
+            include 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'
         }
     }
 
@@ -69,10 +71,22 @@ dependencies {
     compileOnly "javax.annotation:javax.annotation-api:$javaxAnnotationVersion"
 }
 
+class SimpleIncreaseVersionCode extends SimpleVersionCode {
+
+    @Override
+    int buildVersionCode(final StaticVersion version) {
+        return super.buildVersionCode(version) + 10000000
+    }
+
+}
+
 androidVersion {
 
     appVersion(FileAppVersion) {
         sourceFile rootProject.file(".butter/tv.properties")
+        versionCode(SimpleIncreaseVersionCode) {
+            digits 2
+        }
     }
 
 }
