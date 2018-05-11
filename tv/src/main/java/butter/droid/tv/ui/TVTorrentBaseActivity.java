@@ -29,9 +29,9 @@ import butter.droid.base.torrent.TorrentService;
 import butter.droid.base.ui.TorrentActivity;
 import butter.droid.base.utils.LocaleUtils;
 import butterknife.ButterKnife;
-import com.github.se_bastiaan.torrentstream.StreamStatus;
-import com.github.se_bastiaan.torrentstream.Torrent;
-import com.github.se_bastiaan.torrentstream.listeners.TorrentListener;
+import org.butterproject.torrentstream.StreamStatus;
+import org.butterproject.torrentstream.Torrent;
+import org.butterproject.torrentstream.listeners.TorrentListener;
 import dagger.android.AndroidInjection;
 import dagger.android.AndroidInjector;
 import dagger.android.DispatchingAndroidInjector;
@@ -94,7 +94,6 @@ public abstract class TVTorrentBaseActivity extends FragmentActivity implements 
     public void onServiceConnected(ComponentName name, IBinder service) {
         torrentStream = ((TorrentService.ServiceBinder) service).getService();
         torrentStream.addListener(this);
-        torrentStream.setCurrentActivity(this);
         onTorrentServiceConnected(torrentStream);
     }
 

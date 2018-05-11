@@ -17,15 +17,16 @@
 
 package butter.droid.base.ui.player.stream;
 
-import android.content.Context;
 import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+
+import java.io.File;
+
 import butter.droid.base.R;
 import butter.droid.base.content.preferences.PreferencesHandler;
 import butter.droid.base.manager.internal.provider.ProviderManager;
 import butter.droid.base.manager.internal.subtitle.SubtitleManager;
-import butter.droid.base.manager.internal.vlc.PlayerManager;
 import butter.droid.base.manager.internal.vlc.VlcPlayer;
 import butter.droid.base.providers.media.model.MediaWrapper;
 import butter.droid.base.providers.media.model.StreamInfo;
@@ -35,38 +36,30 @@ import butter.droid.provider.subs.SubsProvider;
 import io.reactivex.MaybeObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
-import java.io.File;
 import timber.log.Timber;
 
 public abstract class StreamPlayerPresenterImpl extends BaseVideoPlayerPresenterImpl implements StreamPlayerPresenter {
 
     private final StreamPlayerView view;
-    private final Context context;
-    private final PreferencesHandler preferencesHandler;
     private final VlcPlayer player;
     private final ProviderManager providerManager;
-    private final PlayerManager playerManager;
     private final SubtitleManager subtitleManager;
 
     protected StreamInfo streamInfo;
 
     @Nullable private Disposable subsDisposable;
 
-//    private String currentSubsLang = SubsProvider.SUBTITLE_LANGUAGE_NONE;
+    //    private String currentSubsLang = SubsProvider.SUBTITLE_LANGUAGE_NONE;
     private File subsFile;
     private int subtitleOffset;
     private int streamerProgress;
 
-    public StreamPlayerPresenterImpl(final StreamPlayerView view, final Context context, final PreferencesHandler preferencesHandler,
-            final ProviderManager providerManager, final PlayerManager playerManager, final VlcPlayer player,
-            final SubtitleManager subtitleManager) {
+    public StreamPlayerPresenterImpl(final StreamPlayerView view, final PreferencesHandler preferencesHandler,
+            final ProviderManager providerManager, final VlcPlayer player, final SubtitleManager subtitleManager) {
         super(view, preferencesHandler, player);
         this.view = view;
-        this.context = context;
-        this.preferencesHandler = preferencesHandler;
         this.player = player;
         this.providerManager = providerManager;
-        this.playerManager = playerManager;
         this.subtitleManager = subtitleManager;
     }
 
@@ -172,10 +165,6 @@ public abstract class StreamPlayerPresenterImpl extends BaseVideoPlayerPresenter
         }
     }
 
-    @Override protected void seek(final int delta) {
-        super.seek(delta);
-    }
-
     @Override public void showCustomSubsPicker() {
         view.showSubsFilePicker();
     }
@@ -212,7 +201,7 @@ public abstract class StreamPlayerPresenterImpl extends BaseVideoPlayerPresenter
     }
 
     private void loadSubtitle() {
-        SubtitleWrapper subtitle = streamInfo.getSubtitle();
+        final SubtitleWrapper subtitle = streamInfo.getSubtitle();
         MediaWrapper media = streamInfo.getMedia();
         SubsProvider provider = providerManager.getSubsProvider(media.getProviderId());
         subtitleManager.downloadSubtitle(provider, media.getMedia(), subtitle)
@@ -224,6 +213,7 @@ public abstract class StreamPlayerPresenterImpl extends BaseVideoPlayerPresenter
                     }
 
                     @Override public void onSuccess(final SubtitleWrapper subs) {
+                        streamInfo.setSubtitle(subs);
                         loadSubs(subs.getFileUri());
                     }
 
@@ -249,7 +239,7 @@ public abstract class StreamPlayerPresenterImpl extends BaseVideoPlayerPresenter
         String videoLocation = streamInfo.getStreamUrl();
         if (TextUtils.isEmpty(videoLocation)) {
             // TODO: 7/29/17 Show error
-        //            Toast.makeText(getActivity(), "Error loading media", Toast.LENGTH_LONG).show();
+            //            Toast.makeText(getActivity(), "Error loading media", Toast.LENGTH_LONG).show();
 //            getActivity().finish();
         } else {
             if (!videoLocation.startsWith("file://") && !videoLocation.startsWith(
