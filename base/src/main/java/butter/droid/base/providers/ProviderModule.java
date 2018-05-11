@@ -17,36 +17,35 @@
 
 package butter.droid.base.providers;
 
-import butter.droid.base.R;
-import butter.droid.base.manager.internal.provider.model.ProviderWrapper;
-import butter.droid.provider.base.ProviderScope;
-import butter.droid.provider.mock.MockMediaProvider;
-import butter.droid.provider.mock.MockProviderModule;
-import butter.droid.provider.subs.mock.MockSubsProvider;
-import butter.droid.provider.subs.opensubs.OpenSubsModule;
-import butter.droid.provider.subs.opensubs.OpenSubsProvider;
-import butter.droid.provider.vodo.VodoModule;
-import butter.droid.provider.vodo.VodoProvider;
-import dagger.Module;
-import dagger.Provides;
-import dagger.multibindings.ElementsIntoSet;
 import java.util.Set;
 import java.util.TreeSet;
 
+import butter.droid.base.R;
+import butter.droid.base.manager.internal.provider.model.ProviderWrapper;
+import butter.droid.provider.base.ProviderScope;
+import butter.droid.provider.subs.opensubs.OpenSubsModule;
+import butter.droid.provider.subs.opensubs.OpenSubsProvider;
+import dagger.Module;
+import dagger.Provides;
+import dagger.multibindings.ElementsIntoSet;
+import pct.droid.provider.movies.MoviesModule;
+import pct.droid.provider.movies.MoviesProvider;
+import pct.droid.provider.tv.TvModule;
+import pct.droid.provider.tv.TvProvider;
+
 @Module(includes = {
         ProviderBindModule.class,
-        VodoModule.class,
-        MockProviderModule.class,
+        MoviesModule.class,
+        TvModule.class,
         OpenSubsModule.class}
 )
 public class ProviderModule {
 
-    @Provides @ProviderScope @ElementsIntoSet Set<ProviderWrapper> provideVodoWrapper(final VodoProvider vodoProvider,
-            final OpenSubsProvider openSubsProvider, final MockMediaProvider mockProvider, final MockSubsProvider mockSubsProvider) {
+    @Provides @ProviderScope @ElementsIntoSet Set<ProviderWrapper> provideMovieProvider(final MoviesProvider moviesProvider,
+            final TvProvider tvProvider, final OpenSubsProvider openSubsProvider) {
         Set<ProviderWrapper> set = new TreeSet<>((o1, o2) -> o2.getPosition() - o1.getPosition());
-        set.add(new ProviderWrapper(vodoProvider, openSubsProvider, R.string.vodo_label, R.drawable.ic_nav_movies, 0));
-        set.add(new ProviderWrapper(mockProvider, mockSubsProvider, butter.droid.provider.mock.R.string.title_movies,
-                butter.droid.provider.mock.R.drawable.ic_nav_movies, 1));
+        set.add(new ProviderWrapper(moviesProvider, openSubsProvider, R.string.movies_label, R.drawable.ic_nav_movies, 0));
+        set.add(new ProviderWrapper(tvProvider, openSubsProvider, R.string.tv_label, R.drawable.ic_nav_tv, 1));
         return set;
     }
 

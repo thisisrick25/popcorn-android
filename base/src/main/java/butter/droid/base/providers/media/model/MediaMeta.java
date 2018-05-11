@@ -69,7 +69,7 @@ public class MediaMeta implements Parcelable {
 
     public static final Creator<MediaMeta> CREATOR = new Creator<MediaMeta>() {
         @Override
-        public MediaMeta createFromParcel(android.os.Parcel in) {
+        public MediaMeta createFromParcel(Parcel in) {
             return new MediaMeta(in);
         }
 

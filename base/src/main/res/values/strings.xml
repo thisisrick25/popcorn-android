@@ -19,7 +19,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools"
         tools:locale="en">
 
-    <string name="app_name" translatable="false">Butter</string>
+    <string name="app_name" translatable="false">PopcornTime</string>
     <string name="cancel">Cancel</string>
     <string name="close">Close</string>
     <string name="ok">OK</string>

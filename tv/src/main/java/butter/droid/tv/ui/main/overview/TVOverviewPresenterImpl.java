@@ -149,7 +149,8 @@ public class TVOverviewPresenterImpl implements TVOverviewPresenter {
 
     private void loadProviderSorters(final int providerId) {
         cancelMovieSortersCall(providerId);
-        providerManager.getMediaProvider(providerId).navigation()
+        providerManager.getMediaProvider(providerId)
+                .navigation()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new MaybeObserver<List<NavItem>>() {

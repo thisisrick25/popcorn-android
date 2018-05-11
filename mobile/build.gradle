@@ -22,7 +22,7 @@ android {
     compileSdkVersion rootProject.ext.compileSdk
 
     defaultConfig {
-        applicationId "org.butterproject.butter"
+        applicationId "pct.droid"
         minSdkVersion rootProject.ext.minSdk
     }
 

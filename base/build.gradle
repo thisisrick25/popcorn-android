@@ -69,8 +69,9 @@ dependencies {
     api project(':connectsdk:modules:google_cast')
 
     api project(':provider:media:provider')
-    api project(':provider:media:vodo')
-    api project(':provider:media:mock')
+    api project(':provider:media:movies')
+    api project(':provider:media:tv')
+    debugApi project(':provider:media:mock')
 
     api project(':provider:subs:provider')
     api project(':provider:subs:mock')

@@ -89,22 +89,22 @@ public class RecommendationService extends DaggerIntentService {
         final AtomicBoolean mShowsCallFinished = new AtomicBoolean(false);
 
         // TODO: 6/17/17
-        //fetch movies
+        //fetch pct.droid.provider.movies
 //        if (providerManager.hasProvider(ProviderManager.PROVIDER_TYPE_MOVIE)) {
-//            Timber.d("Fetching movies");
+//            Timber.d("Fetching pct.droid.provider.movies");
 //            //noinspection ConstantConditions
 //            providerManager.getMediaProvider(ProviderManager.PROVIDER_TYPE_MOVIE)
 //                    .getList(movieFilter, new MediaProvider.Callback() {
 //                        @Override
 //                        public void onSuccess(MediaProvider.Filters filters, ArrayList<Media> items, boolean changed) {
-//                            Timber.d(String.format("loaded %s movies", items.size()));
-//                            movies.addAll(items);
+//                            Timber.d(String.format("loaded %s pct.droid.provider.movies", items.size()));
+//                            pct.droid.provider.movies.addAll(items);
 //                            mMoviesCallFinished.set(true);
 //                        }
 //
 //                        @Override
 //                        public void onFailure(Exception ex) {
-//                            Timber.d("Failed to fetch movies");
+//                            Timber.d("Failed to fetch pct.droid.provider.movies");
 //                            mMoviesCallFinished.set(true);
 //                        }
 //                    });

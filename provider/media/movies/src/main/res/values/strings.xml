@@ -18,8 +18,6 @@
 
 <resources>
 
-    <string name="sorter_alphabet">Alphabet</string>
-    <string name="loading_movies">Loading pct.droid.provider.movies…</string>
-    <string name="title_movies">Movies</string>
+    <string name="movies_label">Movies</string>
 
 </resources>

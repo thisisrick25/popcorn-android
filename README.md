@@ -1,7 +1,7 @@
 [Butter for Android](https://github.com/butterproject/butter-android)
 ----
 
-Allow any Android user to watch movies easily streaming from torrents, without any particular knowledge.
+Allow any Android user to watch pct.droid.provider.movies easily streaming from torrents, without any particular knowledge.
 
 Visit the project's website at <http://butterproject.org>.
 

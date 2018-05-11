@@ -30,7 +30,7 @@
     <changelogversion versionName="0.2.5">
         <changelogtext>Change primary color from blue to indigo</changelogtext>
         <changelogtext>Update VLC videoplayer code to LibVLC 1.5.0</changelogtext>
-        <changelogtext>Added option to see full torrent stats for movies</changelogtext>
+        <changelogtext>Added option to see full torrent stats for pct.droid.provider.movies</changelogtext>
         <changelogtext>Added 480p option to default qualities</changelogtext>
         <changelogtext>Added visibility of progress in notification when in background</changelogtext>
         <changelogtext>Added stop action to close in notification when in background</changelogtext>

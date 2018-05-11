@@ -18,8 +18,11 @@
 
 <resources>
 
-    <string name="sorter_alphabet">Alphabet</string>
-    <string name="loading_movies">Loading pct.droid.provider.movies…</string>
-    <string name="title_movies">Movies</string>
+    <string name="sorter_vodo_popularity">Popularity</string>
+    <string name="sorter_vodo_year">Year</string>
+    <string name="sorter_vodo_date_added">Recent</string>
+    <string name="sorter_vodo_rating">Rating</string>
+    <string name="sorter_vodo_alphabet">Alphabet</string>
+    <string name="sorter_vodo_trending">Trending</string>
 
 </resources>
