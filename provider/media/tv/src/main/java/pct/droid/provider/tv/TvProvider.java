@@ -135,7 +135,7 @@ public class TvProvider extends AbsMediaProvider {
             page = 1;
         }
 
-        return tvService.fetchShows(page, query, genre, sorter, 1, null, ITEMS_PER_PAGE)
+        return tvService.fetchShows(page, query, genre, sorter, -1, null, ITEMS_PER_PAGE)
                 .flatMapObservable(Observable::fromArray)
                 .map(this::mapApiShow)
                 .cast(Media.class)
